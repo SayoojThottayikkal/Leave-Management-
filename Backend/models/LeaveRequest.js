@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const leaveRequestSchema = new mongoose.Schema(
   {
-    employee: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    employee: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     fromDate: { type: Date, required: true },
     toDate: { type: Date, required: true },
     type: { type: String, enum: ["sick", "casual", "earned"], required: true },
