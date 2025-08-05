@@ -1,6 +1,6 @@
-const LeaveRequest = require("../models/LeaveRequest");
+import LeaveRequest from "../models/LeaveRequest.js";
 
-exports.applyLeave = async (req, res) => {
+export const applyLeave = async (req, res) => {
   const { fromDate, toDate, reason, type } = req.body;
   const leave = new LeaveRequest({
     employee: req.userId,
@@ -13,17 +13,17 @@ exports.applyLeave = async (req, res) => {
   res.status(201).json({ msg: "Leave applied" });
 };
 
-exports.getMyLeaves = async (req, res) => {
+export const getMyLeaves = async (req, res) => {
   const leaves = await LeaveRequest.find({ employee: req.params.id });
   res.json(leaves);
 };
 
-exports.getAllLeaves = async (req, res) => {
+export const getAllLeaves = async (req, res) => {
   const leaves = await LeaveRequest.find().populate("employee", "name email");
   res.json(leaves);
 };
 
-exports.updateStatus = async (req, res) => {
+export const updateStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   await LeaveRequest.findByIdAndUpdate(id, { status });

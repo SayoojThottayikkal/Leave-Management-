@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
 const leaveRequestSchema = new mongoose.Schema(
   {
     employee: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     fromDate: { type: Date, required: true },
     toDate: { type: Date, required: true },
     type: { type: String, enum: ["sick", "casual", "earned"], required: true },
-
     reason: { type: String, required: true },
     status: {
       type: String,
@@ -15,4 +15,7 @@ const leaveRequestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("LeaveRequest", leaveRequestSchema);
+
+const LeaveRequest = mongoose.model("LeaveRequest", leaveRequestSchema);
+
+export default LeaveRequest;
