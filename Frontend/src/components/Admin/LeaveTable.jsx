@@ -5,7 +5,7 @@ import {
   updateLeaveStatus,
 } from "../../features/leaves/leaveSlice";
 
-const LeaveTable = () => {
+const LeaveTable = ({ filters, sortOption, searchQuery }) => {
   const dispatch = useDispatch();
   const { leaveRequests, status } = useSelector((state) => state.leaves);
   const { token } = useSelector((state) => state.auth);
@@ -17,6 +17,28 @@ const LeaveTable = () => {
   const handleStatusChange = (id, status) => {
     dispatch(updateLeaveStatus({ id, status }));
   };
+
+  const filteredLeaves = leaveRequests
+    .filter((leave) => {
+      const typeMatch = filters.type ? leave.type === filters.type : true;
+      const statusMatch = filters.status
+        ? leave.status === filters.status
+        : true;
+      const searchMatch = searchQuery
+        ? leave.employee?.name
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        : true;
+      return typeMatch && statusMatch && searchMatch;
+    })
+    .sort((a, b) => {
+      if (sortOption === "fromDate") {
+        return new Date(a.fromDate) - new Date(b.fromDate);
+      } else if (sortOption === "status") {
+        return a.status.localeCompare(b.status);
+      }
+      return 0;
+    });
 
   return (
     <div className="overflow-x-auto">
@@ -39,14 +61,14 @@ const LeaveTable = () => {
                 Loading...
               </td>
             </tr>
-          ) : leaveRequests.length === 0 ? (
+          ) : filteredLeaves.length === 0 ? (
             <tr>
               <td colSpan="7" className="text-center p-4">
                 No leave requests found.
               </td>
             </tr>
           ) : (
-            leaveRequests.map((leave) => (
+            filteredLeaves.map((leave) => (
               <tr key={leave._id}>
                 <td className="p-2 border">{leave.employee?.name || "N/A"}</td>
                 <td className="p-2 border">{leave.type}</td>
